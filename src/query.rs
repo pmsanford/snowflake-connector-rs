@@ -14,6 +14,7 @@ use crate::SnowflakeSession;
 use crate::{chunk::download_chunk, Error, Result, SnowflakeRow};
 
 pub(super) const SESSION_EXPIRED: &str = "390112";
+pub(super) const SESSION_GONE: &str = "390111";
 pub(super) const QUERY_IN_PROGRESS_CODE: &str = "333333";
 pub(super) const QUERY_IN_PROGRESS_ASYNC_CODE: &str = "333334";
 const DEFAULT_TIMEOUT_SECONDS: u64 = 300;
@@ -79,6 +80,10 @@ impl QueryExecutor {
 
         if let Some(SESSION_EXPIRED) = response.code.as_deref() {
             return Err(Error::SessionExpired);
+        }
+
+        if let Some(SESSION_GONE) = response.code.as_deref() {
+            return Err(Error::SessionGone);
         }
 
         if !response.success {
@@ -293,7 +298,7 @@ struct RawQueryResponse {
     #[allow(unused)]
     parameters: Option<Vec<RawQueryResponseParameter>>,
     #[allow(unused)]
-    query_id: String,
+    query_id: Option<String>,
     #[allow(unused)]
     get_result_url: Option<String>,
     #[allow(unused)]

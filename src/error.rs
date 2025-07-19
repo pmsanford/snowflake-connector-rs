@@ -23,6 +23,9 @@ pub enum Error {
     #[error("session expired")]
     SessionExpired,
 
+    #[error("session no longer exists")]
+    SessionGone,
+
     #[error("chunk download error: {0}")]
     ChunkDownload(String),
 
